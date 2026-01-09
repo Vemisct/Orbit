@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbit</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'StyleCell/MainStyles.css' %}">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', savedTheme);
+        })();
+    </script>
+</head>
+<body>
+
+    <header class="navbar border-bottom px-4 py-2 sticky-top bg-body shadow-sm">
+        <button class="btn btn-link p-0 me-3" id="menuBtn">
+            <i class="bi bi-list fs-2"></i>
+        </button>
+        <a class="navbar-brand fs-3" href="{% url 'HP' %}">ORBIT</a>
+        <div class="ms-auto">
+            <div id="themeBtn" style="cursor: pointer;">
+                <i class="bi bi-moon-stars-fill fs-4"></i>
+            </div>
+        </div>
+    </header>
+
+    <aside class="sidebar d-flex flex-column shadow" id="sidebar">
+        <div class="p-4 border-bottom">
+            <h4 class="mb-0">Стадія: Альфа</h4>
+            <h5 class="mb-0 fst-italic text-secondary-emphasis">Версія: v.0.2.6</h5>
+        </div>
+        <nav class="nav nav-pills flex-column mt-3">
+            <a href="{% url 'HP' %}" class="nav-link {% if request.resolver_match.url_name == 'HP' %}active{% endif %}">
+                <i class="bi bi-grid me-2"></i> Головна
+            </a>
+            <a href="{% url 'EvP' %}" class="nav-link {% if request.resolver_match.url_name == 'EvP' %}active{% endif %}">
+                <i class="bi bi-calendar-event me-2"></i> Події
+            </a>
+            <a href="{% url 'AnP' %}" class="nav-link {% if request.resolver_match.url_name == 'AnP' %}active{% endif %}">
+                <i class="bi bi-megaphone me-2"></i> Оголошення
+            </a>
+            <a href="{% url 'GrP' %}" class="nav-link {% if request.resolver_match.url_name == 'GrP' %}active{% endif %}">
+                <i class="bi bi-person me-2"></i> Група
+            </a>
+        </nav>
+    </aside>
+
+    <main class="container py-5">
+        <h1 class="display-5 fw-bold mb-5 text-center">Дії з коміркою</h1>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card custom-card h-100 p-4 shadow-sm text-center">
+                    <i class="bi bi-calendar-check fs-1 text-primary mb-3"></i>
+                    <h4>Нові події</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card custom-card h-100 p-4 shadow-sm text-center">
+                    <i class="bi bi-broadcast fs-1 text-warning mb-3"></i>
+                    <h4>Оголошення</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card custom-card h-100 p-4 shadow-sm text-center">
+                    <i class="bi bi-people fs-1 text-success mb-3"></i>
+                    <h4>Активність</h4>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const html = document.documentElement;
+        const themeBtn = document.getElementById('themeBtn');
+        const menuBtn = document.getElementById('menuBtn');
+
+        const updateIcon = (theme) => {
+            themeBtn.innerHTML = theme === 'dark' 
+                ? '<i class="bi bi-sun-fill fs-4"></i>' 
+                : '<i class="bi bi-moon-stars-fill fs-4"></i>';
+        };
+
+        updateIcon(html.getAttribute('data-bs-theme'));
+
+        menuBtn.onclick = (e) => {
+            e.stopPropagation();
+            sidebar.classList.toggle('active');
+        };
+
+        document.onclick = (e) => {
+            if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        };
+
+        themeBtn.onclick = () => {
+            const currentTheme = html.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-bs-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcon(newTheme);
+        };
+    </script>
+</body>
+</html>
