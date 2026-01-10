@@ -32,46 +32,62 @@
     <aside class="sidebar d-flex flex-column shadow" id="sidebar">
         <div class="p-4 border-bottom">
             <h4 class="mb-0">Стадія: Альфа</h4>
-            <h5 class="mb-0 fst-italic text-secondary-emphasis">Версія: v.0.2.6</h5>
+            <h5 class="mb-0 fst-italic text-secondary-emphasis">Версія: v.0.2.64</h5>
         </div>
         <nav class="nav nav-pills flex-column mt-3">
-            <a href="{% url 'HP' %}" class="nav-link {% if request.resolver_match.url_name == 'HP' %}active{% endif %}">
+            <a href="{% url 'HP' %}" class="nav-link {% if not active_tab %}active{% endif %}">
                 <i class="bi bi-grid me-2"></i> Головна
             </a>
-            <a href="{% url 'EvP' %}" class="nav-link {% if request.resolver_match.url_name == 'EvP' %}active{% endif %}">
-                <i class="bi bi-calendar-event me-2"></i> Події
-            </a>
-            <a href="{% url 'AnP' %}" class="nav-link {% if request.resolver_match.url_name == 'AnP' %}active{% endif %}">
-                <i class="bi bi-megaphone me-2"></i> Оголошення
-            </a>
-            <a href="{% url 'GrP' %}" class="nav-link {% if request.resolver_match.url_name == 'GrP' %}active{% endif %}">
+            {% if member.group %}
+            <a href="{% url 'GrP' %}" class="nav-link {% if active_tab == 'group' %}active{% endif %}">
                 <i class="bi bi-person me-2"></i> Група
             </a>
+            <div class="nav-link text-muted small"><i class="bi bi-lock me-2"></i> Події (Скоро)</div>
+            <div class="nav-link text-muted small"><i class="bi bi-lock me-2"></i> Оголошення (Скоро)</div>
+            {% endif %}
         </nav>
     </aside>
 
     <main class="container py-5">
-        <h1 class="display-5 fw-bold mb-5 text-center">Дії з коміркою</h1>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card custom-card h-100 p-4 shadow-sm text-center">
-                    <i class="bi bi-calendar-check fs-1 text-primary mb-3"></i>
-                    <h4>Нові події</h4>
+        {% if active_tab == 'group' %}
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold">{{ group.name }}</h1>
+                <p class="lead text-secondary">{{ group.group_bio }}</p>
+                <span class="badge bg-primary px-3 py-2">{{ group.get_group_type_display }}</span>
+            </div>
+            <div class="row g-4">
+                {% for person in team %}
+                <div class="col-md-4">
+                    <div class="card custom-card p-3 shadow-sm">
+                        <h5 class="mb-1">{{ person.first_name }} {{ person.last_name }}</h5>
+                        <p class="small text-muted mb-0">{{ person.bio|truncatechars:50 }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <h1 class="display-5 fw-bold mb-5 text-center">Дії з коміркою</h1>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card custom-card h-100 p-4 shadow-sm text-center">
+                        <i class="bi bi-calendar-check fs-1 text-primary mb-3"></i>
+                        <h4>Нові події</h4>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card custom-card h-100 p-4 shadow-sm text-center">
+                        <i class="bi bi-broadcast fs-1 text-warning mb-3"></i>
+                        <h4>Оголошення</h4>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card custom-card h-100 p-4 shadow-sm text-center">
+                        <i class="bi bi-people fs-1 text-success mb-3"></i>
+                        <h4>Активність</h4>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card custom-card h-100 p-4 shadow-sm text-center">
-                    <i class="bi bi-broadcast fs-1 text-warning mb-3"></i>
-                    <h4>Оголошення</h4>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card custom-card h-100 p-4 shadow-sm text-center">
-                    <i class="bi bi-people fs-1 text-success mb-3"></i>
-                    <h4>Активність</h4>
-                </div>
-            </div>
-        </div>
+        {% endif %}
     </main>
 
     <script>
@@ -102,7 +118,6 @@
         themeBtn.onclick = () => {
             const currentTheme = html.getAttribute('data-bs-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
             html.setAttribute('data-bs-theme', newTheme);
             localStorage.setItem('theme', newTheme);
             updateIcon(newTheme);
