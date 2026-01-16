@@ -1,1 +1,13 @@
-to do
+{% extends 'Base.html' %}
+{% block content %}
+<div class="container">
+    <div class="welcome-page-wrapper text-center">
+        <h1 class="display-1 fw-bold mb-4">ORBIT</h1>
+        <p class="lead text-secondary mb-5">Ласкаво просимо до нашої мережі комірок.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'LnP' %}" class="btn btn-primary btn-lg px-5 py-3 fw-bold">Увійти</a>
+            <a href="{% url 'RgP' %}" class="btn btn-outline-secondary btn-lg px-5 py-3 fw-bold">Реєстрація</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

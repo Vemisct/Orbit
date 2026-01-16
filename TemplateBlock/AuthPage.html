@@ -1,1 +1,24 @@
-to do
+{% extends 'Base.html' %}
+{% block content %}
+<div class="container">
+    <div class="auth-page-wrapper">
+        <div class="auth-card shadow-sm">
+            <h2 class="text-center mb-4 fw-bold">
+                {% if request.resolver_match.url_name == 'RgP' %}Реєстрація{% else %}Вхід{% endif %}
+            </h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary w-100 py-3 fw-bold mt-3">Підтвердити</button>
+            </form>
+            <div class="mt-4 text-center">
+                {% if request.resolver_match.url_name == 'RgP' %}
+                    <span class="text-secondary">Вже є акаунт?</span> <a href="{% url 'LnP' %}" class="fw-bold text-decoration-none ms-1">Увійти</a>
+                {% else %}
+                    <span class="text-secondary">Ще не з нами?</span> <a href="{% url 'RgP' %}" class="fw-bold text-decoration-none ms-1">Зареєструватися</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

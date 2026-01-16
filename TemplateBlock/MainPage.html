@@ -1,1 +1,28 @@
-to do
+{% extends 'ActionPage.html' %}
+{% block main_content %}
+<div class="mb-5">
+    <h2 class="fw-bold">Усі активні комірки</h2>
+    <p class="text-secondary">Оберіть групу, до якої хочете приєднатися.</p>
+</div>
+
+<div class="row g-4">
+    {% for g in groups %}
+    <div class="col-md-6 col-lg-4">
+        <div class="custom-card shadow-sm d-flex flex-column h-100">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h5 class="fw-bold mb-0 pe-2">{{ g.name }}</h5>
+                <span class="badge {% if g.members.count >= g.capacity %}bg-danger{% else %}bg-success{% endif %} rounded-pill px-3">
+                    {{ g.members.count }}/{{ g.capacity }}
+                </span>
+            </div>
+            <p class="text-secondary small flex-grow-1 mb-4">
+                {{ g.group_bio|default:"Опис відсутній..." }}
+            </p>
+            <button class="btn btn-primary w-100 py-2 fw-bold" {% if g.members.count >= g.capacity %}disabled{% endif %}>
+                Приєднатися
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
