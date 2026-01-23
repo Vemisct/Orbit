@@ -1,15 +1,23 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.urls import reverse_lazy
+from django.contrib import messages
+from django.shortcuts import get_object_or_404
 from .models import Topic, Post
-from .forms import PostForm
+from .forms import PostForm, TopicForm
+from django.utils import timezone
+from datetime import timedelta
 
 
+# Список тем форуму
 class TopicListView(ListView):
     model = Topic
     template_name = 'forum/topic_list.html'
     context_object_name = 'topics'
 
 
+# Відображення теми форуму та пов'язаних з нею постів
 class TopicDetailView(DetailView):
     model = Topic
     template_name = 'forum/topic_detail.html'
@@ -21,3 +29,75 @@ class TopicDetailView(DetailView):
         context['form'] = PostForm()
         context['posts'] = self.object.posts.all()[:self.paginate_by]
         return context
+    
+
+# Створення нової теми
+class TopicCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Topic
+    form_class = TopicForm
+    template_name = 'forum/topic_creation.html'
+    success_url = reverse_lazy('forum:topic_list')
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        messages.success(self.request, 'Тему успішно створено!')
+        return super().form_valid(form)
+
+
+# Додавання повідомлення до теми
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'forum/post_creation.html'
+
+    def form_valid(self, form):
+        form.instance.topic = get_object_or_404(Topic, pk=self.kwargs['pk'])
+        form.instance.created_by = self.request.user
+        messages.success(self.request, 'Повідомлення опубліковано!')
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('forum:topic_detail', kwargs={'pk': self.kwargs['pk']})
+    
+
+# Редагування повідомлення до теми
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'forum/post_edit.html'
+
+    def test_func(self):
+        post = self.get_object()
+        # Дозволяємо редагування автору лише протягом 30 хвилин після створення
+        if self.request.user == post.created_by and (timezone.now() - post.created_at) < timedelta(minutes=30):
+            return True
+        # Дозволяємо редагувати суперюзеру
+        return self.request.user.is_superuser
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Повідомлення успішно відредаговано!')
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('forum:topic_detail', kwargs={'pk': self.object.topic.pk})
+
+
+# Видалення повідомлення у теми
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Post
+    template_name = 'forum/post_confirm_delete.html'
+
+    def test_func(self):
+        post = self.get_object()
+        # Дозволяємо видаляти автору, модераторам або адмінам
+        return self.request.user == post.created_by or self.request.user.profile.role in ['moderator', 'admin']
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Повідомлення успішно видалено!')
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('forum:topic_detail', kwargs={'pk': self.object.topic.pk})
