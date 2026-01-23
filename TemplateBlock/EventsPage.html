@@ -7,9 +7,11 @@
             <h2 class="fw-bold">Події групи</h2>
             <p class="text-secondary">Заплановані заходи для <span class="fw-bold">{{ group.name }}</span></p>
         </div>
-        <button class="btn btn-primary rounded-pill px-4">
-            <i class="bi bi-plus-lg me-2"></i>Створити подію
-        </button>
+        {% if user.is_superuser %}
+        <a href="{% url 'EvCr' %}" class="btn btn-primary rounded-pill px-4">
+            <i class="bi bi-plus-lg me-2"></i>Запланувати подію
+        </a>
+        {% endif %}
     </div>
 
     <div class="row">

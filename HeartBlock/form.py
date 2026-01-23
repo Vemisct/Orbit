@@ -1,5 +1,5 @@
 from django import forms
-from .models import Member
+from .models import *
 
 class MemberForm(forms.ModelForm):
     class Meta:
@@ -16,4 +16,19 @@ class MemberForm(forms.ModelForm):
             'last_name': 'Прізвище',
             'age': 'Вік',
             'bio': 'Біографія',
+        }
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = GroupComment
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={
+                'class': 'form-control', 
+                'rows': 3, 
+                'placeholder': 'Напишіть щось про цю групу...'
+            }),
+        }
+        labels = {
+            'content': ''
         }

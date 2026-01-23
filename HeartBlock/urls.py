@@ -13,6 +13,7 @@ urlpatterns = [
     path('profile/', ProfilePage, name='PrP'),
     path('group/<int:group_id>/', GroupPage, name='GrInP'),
     path('group/join/<int:group_id>/', JoinGroup, name='JnGrP'),
+    path('group/about/<int:group_id>/', AboutGroupPage, name='AbGrP'),
     path('group/leave/', LeaveGroup, name='LvGrP'),
     path('group/mygroup', MemberGroupPage, name='GrMP'),
     path('settings/', SettingsPage, name='StP'),

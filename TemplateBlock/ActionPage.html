@@ -66,6 +66,9 @@
                         <div class="text-secondary" style="font-size: 0.75rem;">Вкладки вашої групи</div>
                     </div>
                     
+                    <a href="{% url 'AbGrP' user.member.group.id %}" class="nav-link">
+                        <i class="bi bi-info-circle me-2"></i> Деталі групи
+                    </a>
                     <a href="{% url 'GrMP' %}" class="nav-link {% if active_tab == 'group' %}active{% endif %}">
                         <i class="bi bi-people me-2"></i> Учасники
                     </a>

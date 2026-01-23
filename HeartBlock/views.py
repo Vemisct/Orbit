@@ -3,6 +3,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import Group, Member
 from .form import *
+from django.contrib import messages
 
 def WelcomePage(request):
     if request.user.is_authenticated:
@@ -134,3 +135,31 @@ def ProfilePage(request):
 def SettingsPage(request):
     if not request.user.is_authenticated: return redirect('LnP')
     return render(request, 'SettingsPage.html')
+
+def AboutGroupPage(request, group_id):
+    if not request.user.is_authenticated: return redirect('LnP')
+    
+    group = get_object_or_404(Group, id=group_id)
+    member = request.user.member
+    
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.group = group
+            comment.author = member
+            comment.save()
+            messages.success(request, "Коментар опубліковано!")
+            return redirect('AbGrP', group_id=group.id)
+    else:
+        form = CommentForm()
+
+    comments = group.comments.all()
+
+    return render(request, 'AboutGroupPage.html', {
+        'group': group,
+        'member': member,
+        'comments': comments,
+        'form': form,
+        'active_tab': 'about'
+    })
