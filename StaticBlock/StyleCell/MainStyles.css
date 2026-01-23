@@ -105,3 +105,29 @@ body {
     background: var(--orbit-gradient) !important;
     color: white !important;
 }
+
+.hover-bg {
+    transition: background-color 0.2s;
+}
+
+.hover-bg:hover {
+    background-color: rgba(0,0,0,0.05) !important;
+}
+
+[data-bs-theme="dark"] .hover-bg:hover {
+    background-color: rgba(255,255,255,0.05) !important;
+}
+
+.group-section-box {
+    background: rgba(99, 102, 241, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px 5px;
+    margin-top: 20px;
+}
+
+.group-section-box .nav-link.active {
+    background: var(--orbit-gradient);
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}

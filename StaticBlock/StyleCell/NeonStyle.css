@@ -1,0 +1,51 @@
+/* NeonStyle.css */
+:root {
+    --neon-gradient: linear-gradient(90deg, #ff00cc, #3333ff, #00ffcc, #ff00cc);
+}
+
+@keyframes neonFlow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+
+html.style-neon .custom-card,
+html.style-neon .sidebar,
+html.style-neon .auth-card {
+    border: 2px solid transparent !important;
+    border-radius: 25px !important;
+    background-image: linear-gradient(var(--card-bg), var(--card-bg)), var(--neon-gradient) !important;
+    background-origin: border-box !important;
+    background-clip: padding-box, border-box !important;
+    background-size: 200% 200% !important;
+    animation: neonFlow 3s linear infinite !important;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.5) !important;
+}
+
+html.style-neon .btn-primary {
+    background: var(--neon-gradient) !important;
+    background-size: 200% auto !important;
+    animation: neonFlow 3s linear infinite !important;
+    border: none !important;
+    box-shadow: 0 0 10px rgba(255, 0, 204, 0.5);
+} 
+html.style-neon .btn-outline-primary {
+    border-radius: 50px !important;
+    background-size: 200% auto;
+    background-image: var(--neon-gradient);
+    animation: neonFlow 3s linear infinite;
+    border: none !important;
+    color: white !important;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+html.style-neon h1, 
+html.style-neon h2, 
+html.style-neon .navbar-brand {
+    background: var(--neon-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% auto;
+    animation: neonFlow 3s linear infinite;
+}

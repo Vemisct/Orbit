@@ -1,0 +1,50 @@
+/* ClumzyStyle.css — Жовтий, Зелений, Рожевий */
+
+html.style-clumzy {
+    --clumzy-yellow: #fff176; /* Світлий жовтий */
+    --clumzy-green: #aed581;  /* Світлий зелений */
+    --clumzy-pink: #f06292;   /* Світлий рожевий */
+}
+
+/* --- Sidebar (Бокова панель) - Рожевий акцент --- */
+html.style-clumzy .sidebar {
+    border-right: 4px solid var(--clumzy-pink) !important;
+}
+
+html.style-clumzy .sidebar .nav-link.active {
+    background-color: var(--clumzy-pink) !important;
+    color: #fff !important;
+    border-radius: 15px;
+}
+
+/* --- Картки - Жовтий та Зелений акцент --- */
+html.style-clumzy .custom-card {
+    border: 2px dashed var(--clumzy-yellow) !important; /* Пунктирна рамка */
+    border-radius: 20px !important;
+    box-shadow: 5px 5px 0px var(--clumzy-green) !important; /* "Жорстка" тінь */
+}
+
+/* --- Кнопки - Мікс кольорів --- */
+html.style-clumzy .btn-primary {
+    background-color: var(--clumzy-green) !important;
+    border-color: var(--clumzy-green) !important;
+    color: #333 !important; /* Темний текст для контрасту на світлому */
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+html.style-clumzy .btn-outline-primary {
+    color: var(--clumzy-pink) !important;
+    border-color: var(--clumzy-pink) !important;
+}
+
+html.style-clumzy .btn:hover {
+    transform: rotate(-2deg) scale(1.05); /* Грайлива анімація при наведенні */
+}
+
+/* --- Заголовки --- */
+html.style-clumzy h1, 
+html.style-clumzy .navbar-brand {
+    color: var(--clumzy-yellow) !important;
+    text-shadow: 2px 2px 0px var(--clumzy-pink); /* Ретро-тінь тексту */
+}
