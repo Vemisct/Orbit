@@ -47,6 +47,15 @@ class TopicCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return super().form_valid(form)
 
 
+# Видалення теми
+class TopicDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Topic
+    success_url = reverse_lazy('forum:topic_list') 
+
+    def test_func(self):
+        return self.request.user.is_superuser
+    
+    
 # Додавання повідомлення до теми
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
@@ -93,7 +102,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         post = self.get_object()
         # Дозволяємо видаляти автору, модераторам або адмінам
-        return self.request.user == post.created_by or self.request.user.profile.role in ['moderator', 'admin']
+        return self.request.user == post.created_by or self.request.user.is_superuser
 
     def form_valid(self, form):
         messages.success(self.request, 'Повідомлення успішно видалено!')
