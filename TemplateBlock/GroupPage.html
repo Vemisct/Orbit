@@ -1,0 +1,31 @@
+{% extends 'ActionPage.html' %}
+{% block main_content %}
+<div class="container py-4">
+    <div class="custom-card shadow-sm p-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <span class="badge bg-primary mb-2">{{ group.get_group_type_display }}</span>
+                <h1 class="fw-bold">{{ group.name }}</h1>
+            </div>
+            <div class="text-end">
+                <h4 class="fw-bold {% if group.is_full %}text-danger{% else %}text-success{% endif %}">
+                    {{ group.members.count }} / {{ group.capacity }}
+                </h4>
+                <small class="text-secondary">учасників</small>
+            </div>
+        </div>
+
+        <p class="lead text-secondary mb-5">{{ group.group_bio|default:"Опис відсутній..." }}</p>
+
+        <div class="border-top pt-4">
+            {% if group.is_full %}
+                <button class="btn btn-secondary btn-lg w-100" disabled>Комірка заповнена</button>
+            {% else %}
+                <a href="{% url 'JnGrP' group.id %}" class="btn btn-primary btn-lg w-100 shadow">
+                    Приєднатися до групи
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

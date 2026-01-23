@@ -27,11 +27,12 @@ class Group(models.Model):
         return self.members.count() >= self.capacity
 
 class Member(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name='member')
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    age = models.PositiveIntegerField()
-    bio = models.TextField(blank=True)
+    age = models.PositiveIntegerField(default="18")
+    bio = models.TextField(blank=True, default="")
     group = models.ForeignKey(
         Group, 
         on_delete=models.SET_NULL, 
