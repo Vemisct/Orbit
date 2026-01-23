@@ -5,4 +5,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('HeartBlock.urls')),
     path('', include('EventsBlock.urls')),
+    path('forum/', include('ForumBlock.urls')),
 ]
