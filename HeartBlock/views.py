@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import Group, Member
+from .form import *
 
 def WelcomePage(request):
     if request.user.is_authenticated:
@@ -18,6 +19,9 @@ def RegPage(request):
             return redirect('HP')
     else:
         form = UserCreationForm()
+        for field in form.fields:
+            form.fields[field].widget.attrs.update({'class': 'form-control bg-main', 'placeholder': 'Введіть дані'})
+            
     return render(request, 'RegPage.html', {'form': form})
 
 def AuthPage(request):
@@ -38,32 +42,95 @@ def LogoutView(request):
 def HomePage(request):
     if not request.user.is_authenticated:
         return redirect('WlP')
-    
+    try:
+        member = request.user.member
+    except Member.DoesNotExist:
+        member = Member.objects.create(user=request.user, first_name=request.user.username)
+
     groups = Group.objects.all()
-    member = getattr(request.user, 'profile', None)
     return render(request, 'MainPage.html', {
         'groups': groups,
         'member': member
     })
 
-def GroupPage(request):
+def GroupPage(request, group_id):
     if not request.user.is_authenticated: return redirect('LnP')
-    member = request.user.profile
-    if member.group:
-        return render(request, 'ActionPage.html', {
-            'member': member,
-            'group': member.group,
-            'team': member.group.members.all(),
-            'active_tab': 'group'
-        })
+    
+    group = get_object_or_404(Group, id=group_id)
+    member, _ = Member.objects.get_or_create(user=request.user)
+    
+    if member.group == group:
+        return redirect('GrMP')
+
+    return render(request, 'GroupPage.html', {
+        'group': group,
+        'member': member,
+    })
+
+def JoinGroup(request, group_id):
+    if not request.user.is_authenticated: return redirect('LnP')
+    
+    group = get_object_or_404(Group, id=group_id)
+    member, _ = Member.objects.get_or_create(user=request.user)
+    
+    if not group.is_full:
+        member.group = group
+        member.save()
+    
+    return redirect('GrMP')
+
+def LeaveGroup(request):
+    if not request.user.is_authenticated: return redirect('LnP')
+    
+    member = request.user.member
+    member.group = None
+    member.save()
+    
     return redirect('HP')
+
+def MemberGroupPage(request):
+    if not request.user.is_authenticated: return redirect('LnP')
+    
+    member = request.user.member
+    if not member.group:
+        return redirect('HP')
+        
+    return render(request, 'MemberGroupPage.html', {
+        'group': member.group,
+        'team': member.group.members.all(),
+        'active_tab': 'group'
+    })
 def GetCM(request):
     return Member.objects.first()
 
-def EventsPage(request):
-    member = GetCM(request)
-    return render(request, 'ActionPage.html', {'member': member, 'active_tab': 'events'})
-
 def AnnPage(request):
+    if not request.user.is_authenticated: return redirect('LnP')
+
+    if not hasattr(request.user, 'member') or not request.user.member.group:
+        return redirect('HP')
+
     member = GetCM(request)
     return render(request, 'ActionPage.html', {'member': member, 'active_tab': 'announcements'})
+
+def ProfilePage(request):
+    if not request.user.is_authenticated:
+        return redirect('LnP')
+    
+    member, created = Member.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = MemberForm(request.POST, request.FILES, instance=member)
+        if form.is_valid():
+            form.save()
+            return redirect('PrP')
+    else:
+        form = MemberForm(instance=member)
+
+    return render(request, 'ProfilePage.html', {
+        'form': form,
+        'member': member
+    })
+
+def SettingsPage(request):
+    if not request.user.is_authenticated: return redirect('LnP')
+    return render(request, 'SettingsPage.html')

@@ -19,7 +19,9 @@
                 {{ g.group_bio|default:"Опис відсутній..." }}
             </p>
             <button class="btn btn-primary w-100 py-2 fw-bold" {% if g.members.count >= g.capacity %}disabled{% endif %}>
-                Приєднатися
+                <a href="{% url 'GrInP' g.id %}" class="btn btn-primary w-100">
+                    Детальніше
+                </a>
             </button>
         </div>
     </div>
