@@ -8,130 +8,105 @@
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    
     <link rel="stylesheet" href="{% static 'StyleCell/MainStyles.css' %}">
-    
     <link rel="stylesheet" href="{% static 'StyleCell/NeonStyle.css' %}">
     <link rel="stylesheet" href="{% static 'StyleCell/ClumzyStyle.css' %}">
 
     <script>
         (function() {
-            // Відновлення теми (Темна/Світла)
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-bs-theme', savedTheme);
-
-            // Відновлення стилю (Neon/Clumzy)
             const savedStyle = localStorage.getItem('active-style');
-            if (savedStyle) {
-                document.documentElement.classList.add('style-' + savedStyle);
-            }
+            if (savedStyle) { document.documentElement.classList.add('style-' + savedStyle); }
         })();
     </script>
 </head>
 <body class="bg-main">
-    <header class="navbar border-bottom px-4 py-2 sticky-top bg-body shadow-sm">
-        <div class="d-flex align-items-center">
-            <button class="btn btn-link p-0 me-3 text-body" id="menuBtn">
-                <i class="bi bi-list fs-2"></i>
-            </button>
-            <a class="navbar-brand fs-3 fw-bold" href="{% url 'HP' %}">ORBIT</a>
-        </div>
-        
-        <div class="d-flex align-items-center gap-3">
-            <a href="{% url 'StP' %}" class="text-body transition-scale">
-                <i class="bi bi-gear-fill fs-4"></i>
-            </a>
-            
-            <div id="themeBtn" style="cursor: pointer;" class="transition-scale">
-                <i class="bi bi-moon-stars-fill fs-4 text-primary"></i>
-            </div>
-        </div>
-    </header>
-
     <aside class="sidebar d-flex flex-column" id="sidebar">
         <div class="p-4 flex-grow-1">
-            <h5 class="fw-bold mb-4 px-2">МЕНЮ</h5>
-            <nav class="nav flex-column gap-1">
-                <a href="{% url 'HP' %}" class="nav-link {% if request.resolver_match.url_name == 'HP' %}active{% endif %}">
-                    <i class="bi bi-house-door me-2"></i> Головна
+            <h4 class="fw-bold mb-5 px-2 text-primary">ORBIT</h4>
+            
+            <nav class="nav flex-column gap-2">
+                <a href="{% url 'HP' %}" class="nav-link {% if request.resolver_match.url_name == 'HP' %}active{% endif %}" title="Головна">
+                    <i class="bi bi-house-door fs-5 me-2"></i> Головна
                 </a>
-                <a href="{% url 'PrP' %}" class="nav-link {% if request.resolver_match.url_name == 'PrP' %}active{% endif %}">
-                    <i class="bi bi-person me-2"></i> Профіль
+                <a href="{% url 'PrP' %}" class="nav-link {% if request.resolver_match.url_name == 'PrP' %}active{% endif %}" title="Профіль">
+                    <i class="bi bi-person fs-5 me-2"></i> Профіль
                 </a>
-
+                
                 {% if user.member.group %}
-                <div class="group-section-box">
-                    <div class="px-3 mb-2">
-                        <div class="group-label text-uppercase">Група</div>
-                        <div class="text-secondary" style="font-size: 0.75rem;">Вкладки вашої групи</div>
-                    </div>
-                    
-                    <a href="{% url 'AbGrP' user.member.group.id %}" class="nav-link">
-                        <i class="bi bi-info-circle me-2"></i> Деталі групи
-                    </a>
-                    <a href="{% url 'GrMP' %}" class="nav-link {% if active_tab == 'group' %}active{% endif %}">
-                        <i class="bi bi-people me-2"></i> Учасники
-                    </a>
-                    <a href="{% url 'EvP' %}" class="nav-link {% if active_tab == 'events' %}active{% endif %}">
-                        <i class="bi bi-calendar-event me-2"></i> Події
-                    </a>
-                    <a href="{% url 'AnP' %}" class="nav-link {% if active_tab == 'announcements' %}active{% endif %}">
-                        <i class="bi bi-megaphone me-2"></i> Оголошення
-                    </a>
-                </div>
+                <div class="mt-4 px-3 mb-2 text-uppercase text-secondary small opacity-50 fw-bold">Група</div>
+                
+                <a href="{% url 'AbGrP' user.member.group.id %}" class="nav-link {% if active_tab == 'about' %}active{% endif %}">
+                    <i class="bi bi-info-circle fs-5 me-2"></i> Деталі
+                </a>
+                <a href="{% url 'GrMP' %}" class="nav-link {% if active_tab == 'group' %}active{% endif %}">
+                    <i class="bi bi-people fs-5 me-2"></i> Учасники
+                </a>
+                <a href="{% url 'EvP' %}" class="nav-link {% if active_tab == 'events' %}active{% endif %}">
+                    <i class="bi bi-calendar fs-5 me-2"></i> Події
+                </a>
+                <a href="{% url 'AnP' %}" class="nav-link {% if active_tab == 'announcements' %}active{% endif %}">
+                    <i class="bi bi-megaphone fs-5 me-2"></i> Оголошення
+                </a>
                 {% endif %}
             </nav>
         </div>
 
-        <div class="p-4 border-top">
-            <a href="{% url 'LtP' %}" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center">
-                <i class="bi bi-box-arrow-left me-2"></i> Вийти
+        <div class="p-3 border-top d-flex justify-content-around align-items-center bg-body-tertiary">
+            <a href="{% url 'ShP' %}" class="btn btn-link text-secondary position-relative hover-scale" title="Магазин">
+                <i class="bi bi-cart3 fs-4"></i>
+                {% if not user.member.is_premium %}
+                <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                {% endif %}
+            </a>
+            
+            <a href="{% url 'StP' %}" class="btn btn-link text-secondary hover-scale" title="Налаштування">
+                <i class="bi bi-gear fs-4"></i>
+            </a>
+
+            <div class="vr mx-2"></div>
+
+            <a href="{% url 'LtP' %}" class="btn btn-link text-danger hover-scale" title="Вийти">
+                <i class="bi bi-box-arrow-right fs-4"></i>
             </a>
         </div>
     </aside>
 
     <main class="content-wrapper" id="mainContent">
-        <div class="container-fluid">
+        <header class="d-lg-none d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+            <span class="fw-bold fs-4">ORBIT</span>
+            <button class="btn btn-link text-body p-0" id="menuBtn">
+                <i class="bi bi-list fs-1"></i>
+            </button>
+        </header>
+
+        <div class="container-fluid px-0">
             {% block main_content %}{% endblock %}
         </div>
     </main>
 
     <script>
         const sidebar = document.getElementById('sidebar');
-        const html = document.documentElement;
-        const themeBtn = document.getElementById('themeBtn');
         const menuBtn = document.getElementById('menuBtn');
-
-        const updateIcon = (theme) => {
-            themeBtn.innerHTML = theme === 'dark' 
-                ? '<i class="bi bi-sun-fill fs-4 text-warning"></i>' 
-                : '<i class="bi bi-moon-stars-fill fs-4 text-primary"></i>';
-        };
-        updateIcon(html.getAttribute('data-bs-theme'));
-
-        themeBtn.onclick = () => {
-            const currentTheme = html.getAttribute('data-bs-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-bs-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateIcon(newTheme);
-        };
-
-        menuBtn.onclick = (e) => {
-            e.stopPropagation();
-            sidebar.classList.toggle('active');
-        };
-
+        
+        if(menuBtn) {
+            menuBtn.onclick = (e) => {
+                e.stopPropagation();
+                sidebar.classList.toggle('active');
+            };
+        }
+        
         document.onclick = (e) => {
-            if (window.innerWidth < 992 && !sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+            if (window.innerWidth < 992 && !sidebar.contains(e.target) && menuBtn && !menuBtn.contains(e.target)) {
                 sidebar.classList.remove('active');
             }
         };
     </script>
-    <script>
-    if (localStorage.getItem('street-style') === 'true') {
-        document.getElementById('streetStyleLink').disabled = false;
-    }
-    </script>
+    
+    <style>
+        .hover-scale { transition: transform 0.2s; }
+        .hover-scale:hover { transform: scale(1.1); color: var(--bs-primary) !important; }
+    </style>
 </body>
 </html>

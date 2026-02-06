@@ -1,0 +1,51 @@
+{% extends 'ActionPage.html' %}
+
+{% block main_content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Нове оголошення</h2>
+            <p class="text-secondary">Створіть новину для всіх учасників групи</p>
+        </div>
+
+        <div class="custom-card shadow-sm p-4 p-md-5">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-secondary text-uppercase small">Заголовок</label>
+                    {{ form.title }}
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-secondary text-uppercase small">Зображення</label>
+                        {{ form.image }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-secondary text-uppercase small">Прив'язати подію</label>
+                        {{ form.event }}
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-secondary text-uppercase small">Зміст оголошення</label>
+                    {{ form.description }}
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-secondary text-uppercase small">Деталі / Умови</label>
+                    {{ form.conditions }}
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end mt-5">
+                    <a href="{% url 'AnP' %}" class="btn btn-light rounded-pill px-4">Скасувати</a>
+                    <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold">
+                        <i class="bi bi-send me-2"></i>Опублікувати
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

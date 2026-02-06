@@ -38,7 +38,7 @@
         <h4 class="fw-bold mb-3">Обговорення</h4>
         
         <div class="custom-card p-4 mb-4">
-            <form method="post">
+            <form method="post" id="comment-form">
                 {% csrf_token %}
                 <div class="d-flex gap-3">
                     <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white fw-bold" style="width: 40px; height: 40px; min-width: 40px;">
@@ -54,17 +54,27 @@
             </form>
         </div>
 
-        <div class="d-flex flex-column gap-3">
+        <div id="comments-list" class="d-flex flex-column gap-3">
             {% for comment in comments %}
-            <div class="custom-card p-3 shadow-sm border-0">
-                <div class="d-flex justify-content-between mb-2">
+            <div class="custom-card p-3 shadow-sm border-0 mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
                     <div class="d-flex align-items-center gap-2">
                         <div class="fw-bold text-primary">{{ comment.author.first_name }} {{ comment.author.last_name }}</div>
                         <small class="text-muted" style="font-size: 0.8rem;">@{{ comment.author.user.username }}</small>
                     </div>
-                    <small class="text-secondary">{{ comment.created_at|date:"d M H:i" }}</small>
+                    
+                    <div class="d-flex align-items-center gap-3">
+                        <small class="text-secondary" style="font-size: 0.85rem;">{{ comment.created_at|date:"d M H:i" }}</small>
+                        <div class="delete-container" id="del-wrapper-{{ comment.id }}" data-created-at="{{ comment.created_at|date:'c' }}" style="width: 20px; display: flex; justify-content: center;">
+                            {% if comment.author == member and comment.can_be_deleted %}
+                            <a href="{% url 'DlCm' comment.pk %}" class="text-danger" title="Видалити">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-                <p class="mb-0 small">{{ comment.content }}</p>
+                <p class="mb-0 small text-break">{{ comment.content }}</p>
             </div>
             {% empty %}
             <p class="text-center text-muted py-3">Поки що коментарів немає. Будьте першим!</p>
@@ -81,4 +91,86 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteContainers = document.querySelectorAll('.delete-container');
+        const TEN_MINUTES = 10 * 60 * 1000;
+
+        deleteContainers.forEach(container => {
+            const createdAtStr = container.getAttribute('data-created-at');
+            if (!createdAtStr) return;
+
+            const createdAt = new Date(createdAtStr).getTime();
+            const expiryTime = createdAt + TEN_MINUTES;
+            const now = new Date().getTime();
+
+            const timeLeft = expiryTime - now;
+
+            if (timeLeft > 0) {
+                setTimeout(() => {
+                    container.innerHTML = '';
+                    console.log('Час на видалення коментаря вийшов.');
+                }, timeLeft);
+            } else {
+                container.innerHTML = '';
+            }
+        });
+    });
+    document.getElementById('comment-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const commentsList = document.querySelector('.d-flex.flex-column.gap-3');
+
+        fetch(window.location.href, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const newComment = document.createElement('div');
+                newComment.className = 'custom-card p-3 shadow-sm border-0 mb-3 new-comment';
+                newComment.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="fw-bold text-primary">${data.author}</div>
+                            <small class="text-muted" style="font-size: 0.8rem;">@${data.username}</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <small class="text-secondary" style="font-size: 0.85rem;">Щойно</small>
+                            <div id="del-wrapper-${data.id}" style="width: 20px; display: flex; justify-content: center;">
+                                <a href="${data.delete_url}" class="text-danger"><i class="bi bi-trash"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mb-0 small text-break">${data.content}</p>
+                `;
+                
+                commentsList.prepend(newComment);
+                this.reset();
+                setTimeout(() => {
+                    const btnWrapper = document.getElementById(`del-wrapper-${data.id}`);
+                    if (btnWrapper) btnWrapper.innerHTML = '';
+                }, 600000);
+            }
+        });
+    });
+    document.querySelectorAll('.delete-container').forEach(container => {
+        const createdAtStr = container.getAttribute('data-created-at');
+        if (!createdAtStr) return;
+
+        const createdAt = new Date(createdAtStr).getTime();
+        const timeLeft = (createdAt + 600000) - new Date().getTime();
+
+        if (timeLeft > 0) {
+            setTimeout(() => { container.innerHTML = ''; }, timeLeft);
+        } else {
+            container.innerHTML = '';
+        }
+    });
+</script>
 {% endblock %}
