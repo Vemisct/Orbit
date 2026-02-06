@@ -4,4 +4,5 @@ from .views import *
 
 urlpatterns = [
     path('group/events/', EventsPage, name='EvP'),
+    path('group/events/create/', CreateEventPage, name='EvCr'),
 ]

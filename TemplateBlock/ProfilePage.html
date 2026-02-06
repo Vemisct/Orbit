@@ -1,68 +1,53 @@
 {% extends 'ActionPage.html' %}
-
 {% block main_content %}
-<div class="mb-4">
-    <h2 class="fw-bold">Налаштування профілю</h2>
-    <p class="text-secondary">Керуйте своєю особистою інформацією.</p>
-</div>
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="custom-card p-4 p-md-5 shadow-sm">
+                <div class="text-center mb-4">
+                    <div class="avatar-container mb-3">
+                        {% if member.avatar %}
+                            <img src="{{ member.avatar.url }}" class="rounded-circle border border-4 border-primary shadow" style="width: 150px; height: 150px; object-fit: cover;">
+                        {% else %}
+                            <div class="rounded-circle bg-primary-subtle d-flex align-items-center justify-content-center mx-auto" style="width: 150px; height: 150px; font-size: 4rem;">
+                                👤
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <h2 class="fw-bold mb-1">{{ member.first_name }} {{ member.last_name }}</h2>
+                    <p class="text-primary fw-bold mb-3">{{ member.status|default:"Встановіть статус у редакторі" }}</p>
+                    
+                    {% if member.is_premium %}
+                        <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
+                            <i class="bi bi-star-fill me-1"></i> PREMIUM
+                        </span>
+                    {% endif %}
+                </div>
 
-<div class="row g-4">
-    <div class="col-lg-4">
-        <div class="custom-card shadow-sm text-center p-4 h-100">
-            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold mx-auto mb-3" 
-                 style="width: 100px; height: 100px; font-size: 2.5rem;">
-                {{ user.username|slice:":1"|upper }}
-            </div>
-            <h4 class="fw-bold mb-1">{{ user.username }}</h4>
-            <p class="text-secondary small mb-3">{{ user.email }}</p>
-            
-            <hr class="my-3 opacity-25">
-            
-            <div class="d-flex justify-content-between px-3">
-                <span class="text-secondary">Група:</span>
-                <span class="fw-bold text-primary">
-                    {% if member.group %}{{ member.group.name }}{% else %}Немає{% endif %}
-                </span>
-            </div>
-             {% if member.bio %}
-             <div class="mt-4 text-start">
-                 <small class="text-secondary fw-bold">ПРО МЕНЕ</small>
-                 <p class="small mt-1">{{ member.bio }}</p>
-             </div>
-             {% endif %}
-        </div>
-    </div>
+                <hr class="my-4 opacity-25">
 
-    <div class="col-lg-8">
-        <div class="custom-card shadow-sm p-4 h-100">
-            <h5 class="fw-bold mb-4">Особисті дані</h5>
-            <form method="post">
-                {% csrf_token %}
-                <div class="row g-3">
+                <div class="row g-4">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold small text-secondary">Ім'я</label>
-                        {{ form.first_name }}
+                        <label class="small text-uppercase fw-bold opacity-50">Вік</label>
+                        <p class="fs-5">{{ member.age }} років</p>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold small text-secondary">Прізвище</label>
-                        {{ form.last_name }}
+                        <label class="small text-uppercase fw-bold opacity-50">Група</label>
+                        <p class="fs-5">{{ member.group.name|default:"Не в групі" }}</p>
                     </div>
-                    <div class="col-md-12">
-                        <label class="form-label fw-bold small text-secondary">Вік</label>
-                        {{ form.age }}
-                    </div>
-                    <div class="col-md-12">
-                        <label class="form-label fw-bold small text-secondary">Біографія</label>
-                        {{ form.bio }}
+                    <div class="col-12">
+                        <label class="small text-uppercase fw-bold opacity-50">Про себе</label>
+                        <p class="fs-5">{{ member.bio|default:"Тут поки порожньо..." }}</p>
                     </div>
                 </div>
-                
-                <div class="d-flex justify-content-end mt-4">
-                    <button type="submit" class="btn btn-primary px-4 py-2 fw-bold">
-                        Зберегти зміни
-                    </button>
+
+                <div class="mt-5 text-center">
+                    <a href="{% url 'PrEdP' %}" class="btn btn-primary rounded-pill px-5 py-3 fw-bold shadow-sm">
+                        <i class="bi bi-pencil-square me-2"></i> Редактор профілю
+                    </a>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
