@@ -36,9 +36,13 @@
                         <label class="small text-uppercase fw-bold opacity-50">Група</label>
                         <p class="fs-5">{{ member.group.name|default:"Не в групі" }}</p>
                     </div>
-                    <div class="col-12">
+                    <div class="col-6">
                         <label class="small text-uppercase fw-bold opacity-50">Про себе</label>
                         <p class="fs-5">{{ member.bio|default:"Тут поки порожньо..." }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="small text-uppercase fw-bold opacity-50">Портфоліо</label>
+                        <p class="fs-5"><a  href="{% url 'portfolio:portfolio_list' %}">Переглянути</a></p>
                     </div>
                 </div>
 
