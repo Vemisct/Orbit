@@ -10,3 +10,4 @@ urlpatterns = [
     path('<int:pk>/delete/', views.PortfolioDeleteView.as_view(), name='portfolio_delete'),
     path('<str:username>/', views.UserPortfolioView.as_view(), name='user_portfolio'),
 ]
+
