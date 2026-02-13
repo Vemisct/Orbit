@@ -38,6 +38,12 @@
                             "{{ person.bio|default:'Учасник поки що мовчить...'|truncatechars:40 }}"
                         </p>
                     </div>
+                    
+                    <a href="{% url 'portfolio:user_portfolio' username=person.user.username %}" class="btn btn-outline-primary btn-sm mt-3 d-inline-flex align-items-center gap-2">
+                       <i class="bi bi-folder2-open"></i>
+                        Переглянути проекти
+                    </a>
+                    
                 </div>
             </a>
         </div>
