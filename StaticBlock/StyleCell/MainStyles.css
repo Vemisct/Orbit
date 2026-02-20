@@ -131,3 +131,49 @@ body {
     color: white !important;
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.new-comment {
+    animation: slideIn 0.4s ease-out forwards;
+    border-left: 4px solid var(--bs-primary) !important;
+}
+
+#comments-container {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.comment-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 120px;
+    justify-content: flex-end;
+}
+
+.delete-wrapper {
+    width: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.custom-card, .card {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+[data-bs-theme="dark"] .bg-white, 
+[data-bs-theme="dark"] .bg-light {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+}
+
+html.style-clumzy [data-bs-theme="dark"] .custom-card {
+    background-color: #1a1a1a !important;
+    border: 2px dashed var(--clumzy-yellow) !important;
+}

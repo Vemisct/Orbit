@@ -3,6 +3,10 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import Group, Member
 from .form import *
+from django.contrib import messages
+from django.http import JsonResponse
+from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 
 def WelcomePage(request):
     if request.user.is_authenticated:
@@ -113,24 +117,88 @@ def AnnPage(request):
     return render(request, 'ActionPage.html', {'member': member, 'active_tab': 'announcements'})
 
 def ProfilePage(request):
-    if not request.user.is_authenticated:
-        return redirect('LnP')
-    
-    member, created = Member.objects.get_or_create(user=request.user)
-
-    if request.method == 'POST':
-        form = MemberForm(request.POST, request.FILES, instance=member)
-        if form.is_valid():
-            form.save()
-            return redirect('PrP')
-    else:
-        form = MemberForm(instance=member)
-
-    return render(request, 'ProfilePage.html', {
-        'form': form,
-        'member': member
-    })
-
+    if not request.user.is_authenticated: return redirect('LnP')
+    member = request.user.member
+    return render(request, 'ProfilePage.html', {'member': member})
 def SettingsPage(request):
     if not request.user.is_authenticated: return redirect('LnP')
     return render(request, 'SettingsPage.html')
+
+def AboutGroupPage(request, group_id):
+    if not request.user.is_authenticated: return redirect('LnP')
+    
+    group = get_object_or_404(Group, id=group_id)
+    member = request.user.member
+    
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.group = group
+            comment.author = member
+            comment.save()
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'success',
+                    'content': comment.content,
+                    'author': f"{comment.author.first_name} {comment.author.last_name}",
+                    'username': comment.author.user.username,
+                    'created_at': "Щойно",
+                    'id': comment.id,
+                    'delete_url': reverse('DlCm', kwargs={'pk': comment.pk})
+                })
+            
+            messages.success(request, "Коментар опубліковано!")
+            return redirect('AbGrP', group_id=group.id)
+    else:
+        form = CommentForm()
+
+    comments = group.comments.all()
+
+    return render(request, 'AboutGroupPage.html', {
+        'group': group,
+        'member': member,
+        'comments': comments,
+        'form': form,
+        'active_tab': 'about'
+    })
+
+def DeleteComment(request, pk):
+    comment = get_object_or_404(GroupComment, pk=pk)
+    if comment.author == request.user.member and comment.can_be_deleted:
+        comment.delete()
+        messages.success(request, "Коментар видалено.")
+    else:
+        messages.error(request, "Час на видалення вийшов або ви не автор.")
+
+    return redirect(request.META.get('HTTP_REFERER', 'AbGrP'))
+
+def ProfileEditPage(request):
+    if not request.user.is_authenticated: return redirect('LnP')
+    member = request.user.member
+    
+    if request.method == 'POST':
+        form = MemberEditForm(request.POST, request.FILES, instance=member)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Профіль оновлено!")
+            return redirect('PrP')
+        else:
+            messages.error(request, "Помилка при збереженні.")
+    else:
+        form = MemberEditForm(instance=member)
+    
+    return render(request, 'ProfileRedPage.html', {'form': form, 'member': member})
+
+def ShopPage(request):
+    return render(request, 'ShopPage.html')
+
+@csrf_exempt
+def PaymentSuccess(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            member = request.user.member
+            member.is_premium = True
+            member.save()
+            return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)

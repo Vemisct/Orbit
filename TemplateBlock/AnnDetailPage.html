@@ -1,0 +1,72 @@
+{% extends 'ActionPage.html' %}
+
+{% block main_content %}
+<div class="container-fluid px-0">
+    <div class="mb-4">
+        <a href="{% url 'AnP' %}" class="btn btn-light border fw-bold rounded-pill px-4">
+            <i class="bi bi-arrow-left me-2"></i>До списку
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="custom-card p-0 overflow-hidden shadow-sm position-relative">
+                
+                {% if ann.image %}
+                <div class="position-relative" style="height: 350px;">
+                    <img src="{{ ann.image.url }}" class="w-100 h-100 object-fit-cover" alt="{{ ann.title }}">
+                </div>
+                {% endif %}
+
+                <div class="p-4 p-md-5 bg-body"> <div class="mb-3">
+                         <span class="badge bg-secondary-subtle text-secondary rounded-pill px-3">
+                            <i class="bi bi-clock me-2"></i>Створено: {{ ann.created_at|date:"d M H:i" }}
+                        </span>
+                    </div>
+
+                    <h1 class="display-6 fw-bold mb-4">{{ ann.title }}</h1>
+
+                    <div class="fs-5 text-secondary lh-lg mb-5" style="white-space: pre-line;">
+                        {{ ann.description }}
+                    </div>
+
+                    {% if ann.event %}
+                        <div class="my-4 p-3 bg-primary-subtle rounded-4 border border-primary border-opacity-25 d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="fw-bold text-primary mb-1">Пов'язана подія:</h6>
+                                <span class="fs-5">{{ ann.event.title }}</span>
+                            </div>
+                            <a href="{% url 'EvP' %}" class="btn btn-primary rounded-pill px-4">
+                                До подій <i class="bi bi-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    {% elif ann.manual_date %}
+                        <div class="my-4 p-3 bg-warning-subtle rounded-4 border border-warning border-opacity-25 d-inline-block">
+                            <h6 class="fw-bold text-warning-emphasis mb-1">
+                                <i class="bi bi-calendar-event me-2"></i>Дата проведення/дедлайн:
+                            </h6>
+                            <span class="fs-4 fw-bold text-dark">{{ ann.manual_date|date:"d E Y, H:i" }}</span>
+                        </div>
+                    {% endif %}
+
+                    {% if ann.conditions %}
+                    <div class="mt-4 p-4 rounded-4 bg-light border">
+                        <h5 class="fw-bold mb-3">
+                            <i class="bi bi-exclamation-circle me-2 text-muted"></i>Умови та деталі:
+                        </h5>
+                        <p class="mb-0 text-muted fw-medium">
+                            {{ ann.conditions|linebreaksbr }}
+                        </p>
+                    </div>
+                    {% endif %}
+
+                </div>
+                
+                <div class="card-footer bg-light p-3 border-top text-center text-muted small">
+                    Опубліковано у групі <strong>{{ ann.group.name }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

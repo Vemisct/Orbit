@@ -1,0 +1,42 @@
+{% extends 'ActionPage.html' %}
+{% block main_content %}
+<div class="container py-4" style="max-width: 700px;">
+    
+    <div class="d-flex align-items-center mb-4">
+        <a href="{% url 'EvP' %}" class="btn btn-outline-secondary me-3 rounded-circle" style="width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center;">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <h2 class="fw-bold mb-0">Запланувати подію</h2>
+    </div>
+
+    <div class="custom-card p-5 shadow-sm">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label class="form-label fw-bold text-secondary small">НАЗВА</label>
+                {{ form.title }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold text-secondary small">ДАТА ТА ЧАС</label>
+                {{ form.date }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold text-secondary small">МІСЦЕ (ЛОКАЦІЯ)</label>
+                {{ form.location }}
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold text-secondary small">ОПИС</label>
+                {{ form.description }}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-pill">
+                <i class="bi bi-calendar-plus me-2"></i> Опублікувати подію
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

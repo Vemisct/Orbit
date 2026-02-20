@@ -1,50 +1,106 @@
-/* ClumzyStyle.css — Жовтий, Зелений, Рожевий */
+/* --- CLUMZY STYLE: PASTEL / SOFT / CUTE --- */
 
 html.style-clumzy {
-    --clumzy-yellow: #fff176; /* Світлий жовтий */
-    --clumzy-green: #aed581;  /* Світлий зелений */
-    --clumzy-pink: #f06292;   /* Світлий рожевий */
+    /* Палітра "Морозиво" */
+    --clumzy-bg: #fffbf0;         /* Кремовий фон */
+    --clumzy-pink: #ffcdd2;       /* Пастельний рожевий */
+    --clumzy-green: #c8e6c9;      /* Пастельний зелений */
+    --clumzy-blue: #bbdefb;       /* Пастельний блакитний */
+    --clumzy-yellow: #fff9c4;     /* Пастельний жовтий */
+    --clumzy-text: #5d4037;       /* М'який коричневий (замість чорного) */
+    --clumzy-radius: 25px;        /* Дуже круглі кути */
 }
 
-/* --- Sidebar (Бокова панель) - Рожевий акцент --- */
+/* 1. Глобальний фон та шрифт */
+html.style-clumzy body {
+    background-color: var(--clumzy-bg);
+    color: var(--clumzy-text);
+    font-family: 'Nunito', 'Segoe UI', sans-serif;
+}
+
+/* 2. Перебиваємо Bootstrap Backgrounds */
+html.style-clumzy .bg-light, 
+html.style-clumzy .bg-white,
+html.style-clumzy .card,
+html.style-clumzy .custom-card {
+    background-color: #ffffff !important;
+    border: 2px solid var(--clumzy-pink) !important;
+    border-radius: var(--clumzy-radius) !important;
+    box-shadow: 6px 6px 0px var(--clumzy-blue) !important;
+}
+
+/* 3. Сайдбар */
 html.style-clumzy .sidebar {
-    border-right: 4px solid var(--clumzy-pink) !important;
+    background-color: #fff !important;
+    border-right: 2px solid var(--clumzy-pink) !important;
 }
 
+html.style-clumzy .sidebar .nav-link {
+    color: var(--clumzy-text) !important;
+    border-radius: 15px;
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+}
+
+/* АКТИВНА КОМІРКА (Рожева і мила) */
 html.style-clumzy .sidebar .nav-link.active {
     background-color: var(--clumzy-pink) !important;
     color: #fff !important;
-    border-radius: 15px;
+    box-shadow: 3px 3px 0px var(--clumzy-green);
+    transform: translateY(-2px);
 }
 
-/* --- Картки - Жовтий та Зелений акцент --- */
-html.style-clumzy .custom-card {
-    border: 2px dashed var(--clumzy-yellow) !important; /* Пунктирна рамка */
-    border-radius: 20px !important;
-    box-shadow: 5px 5px 0px var(--clumzy-green) !important; /* "Жорстка" тінь */
+/* 4. Тексти (щоб сірий не виглядав брудним) */
+html.style-clumzy .text-muted, 
+html.style-clumzy .text-secondary {
+    color: #8d6e63 !important;
 }
 
-/* --- Кнопки - Мікс кольорів --- */
+html.style-clumzy h1, html.style-clumzy h2, html.style-clumzy h3, 
+html.style-clumzy h4, html.style-clumzy h5, html.style-clumzy .fw-bold {
+    color: var(--clumzy-text) !important;
+}
+
+/* 5. Кнопки (Пастельні) */
 html.style-clumzy .btn-primary {
     background-color: var(--clumzy-green) !important;
     border-color: var(--clumzy-green) !important;
-    color: #333 !important; /* Темний текст для контрасту на світлому */
-    font-weight: bold;
-    border-radius: 10px;
+    color: var(--clumzy-text) !important;
+    border-radius: 20px;
+    font-weight: 700;
 }
 
+html.style-clumzy .btn-primary:hover {
+    background-color: #a5d6a7 !important;
+    transform: scale(1.05);
+}
+
+html.style-clumzy .btn-light, 
 html.style-clumzy .btn-outline-primary {
-    color: var(--clumzy-pink) !important;
+    background-color: #fff !important;
+    border: 2px solid var(--clumzy-blue) !important;
+    color: var(--clumzy-text) !important;
+    border-radius: 20px;
+}
+
+/* 6. Форми (Inputs) */
+html.style-clumzy .form-control, 
+html.style-clumzy .form-select {
+    border: 2px solid var(--clumzy-yellow) !important;
+    background-color: #fff !important;
+    border-radius: 15px;
+    color: var(--clumzy-text);
+}
+
+html.style-clumzy .form-control:focus {
     border-color: var(--clumzy-pink) !important;
+    box-shadow: 0 0 0 4px rgba(255, 205, 210, 0.5) !important;
 }
 
-html.style-clumzy .btn:hover {
-    transform: rotate(-2deg) scale(1.05); /* Грайлива анімація при наведенні */
-}
-
-/* --- Заголовки --- */
-html.style-clumzy h1, 
-html.style-clumzy .navbar-brand {
-    color: var(--clumzy-yellow) !important;
-    text-shadow: 2px 2px 0px var(--clumzy-pink); /* Ретро-тінь тексту */
+/* 7. Toast/Alerts (Повідомлення) */
+html.style-clumzy .alert, 
+html.style-clumzy .toast {
+    border-radius: 20px;
+    border: 2px solid var(--clumzy-pink);
+    background-color: #fff;
 }
