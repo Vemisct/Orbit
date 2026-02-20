@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'EventsBlock',
     'ForumBlock',
     'AnnBlock',
+    'PortfolioBlock',
 ]
 
 MIDDLEWARE = [
