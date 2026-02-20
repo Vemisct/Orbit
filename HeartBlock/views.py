@@ -104,6 +104,15 @@ def MemberGroupPage(request):
         'team': member.group.members.all(),
         'active_tab': 'group'
     })
+
+def AboutMember(request, member_id):
+    member = get_object_or_404(Member, id=member_id)
+    
+    context = {
+        'member': member
+    }
+    return render(request, 'AboutMemberPage.html', context)
+
 def GetCM(request):
     return Member.objects.first()
 

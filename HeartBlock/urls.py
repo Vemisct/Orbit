@@ -21,4 +21,5 @@ urlpatterns = [
     path('profile/edit/', ProfileEditPage, name='PrEdP'),
     path('shop/', ShopPage, name='ShP'),
     path('payment-success/', PaymentSuccess, name='PaySuccess'),
+    path('member/<int:member_id>/', AboutMember, name='AbMP'),
 ]
